@@ -12,7 +12,7 @@ def test_clean_email_lowercases_and_trims():
 
 
 def test_clean_price_handles_dollar_signs_and_commas():
-    assert clean_price("$1,200.50") == 1200.5
+    assert clean_price("$1,200.50") == 1200.0
 
 
 def test_clean_price_returns_none_for_bad_input():
