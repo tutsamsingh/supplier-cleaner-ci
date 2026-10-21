@@ -1,0 +1,28 @@
+# Runs the database and the API together on your machine:
+#   docker compose up --build
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app
+      POSTGRES_DB: suppliers
+    ports:
+      - "5432:5432"
+    # Lets the API wait until Postgres is actually ready
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U app"]
+      interval: 2s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    environment:
+      # "db" is the service name above; Docker networking turns it into an address
+      DATABASE_URL: postgresql://app:app@db:5432/suppliers
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
